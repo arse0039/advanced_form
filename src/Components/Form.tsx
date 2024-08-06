@@ -1,8 +1,11 @@
+"use client"
 import React, {useState} from 'react';
-import TextInput from './TextInput';
+import { FormDataProps } from '@/Types/types';
+import NameSection from './NameSection';
+import AddressSection from './AddressSection';
 
 const FormComponent = () => {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormDataProps>({
         firstName: "",
         lastName: "",
         middleInitial: "",
@@ -13,30 +16,26 @@ const FormComponent = () => {
         phoneNumber: null,
     })
 
-    const handleTextChange = (e) => {
-        const {name, value} = e.target;
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData((previousData) => ({
             ...previousData,
-            [name]: value
+            [e.target.name]: e.target.value
         }))
     }
     return (
         <form>
-            <div className="flex flex-row justify-center gap-12 border-2 border-slate-100 rounded-lg p-4 w-[90vw]">
-                <TextInput 
-                    labelName={"First Name"}
-                    name={'firstName'}
-                    value={formData.firstName}
-                    onChange={handleTextChange}    
-                />
-                <TextInput 
-                    labelName={"Last Name"}
-                    name={'lastName'}
-                    value={formData.lastName}
-                    onChange={handleTextChange}    
-                />
-            </div>
-
+            <NameSection 
+                firstName={formData.firstName} 
+                lastName={formData.lastName} 
+                handleTextChange={handleTextChange} 
+            />
+            <AddressSection 
+                address={formData.address}
+                state={formData.state}
+                zipCode={formData.zipCode}
+                county={formData.county}
+                handleTextChange={handleTextChange}
+            />
         </form>
     )
 }
