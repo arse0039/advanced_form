@@ -22,6 +22,13 @@ const FormComponent = () => {
             [e.target.name]: e.target.value
         }))
     }
+
+    const handleAddressItemChange = (item: string, changedValue:string) => {
+        setFormData((previousData) => ({
+            ...previousData,
+            [item]: changedValue
+        }))
+    }
     return (
         <form>
             <NameSection 
@@ -34,7 +41,8 @@ const FormComponent = () => {
                 state={formData.state}
                 zipCode={formData.zipCode}
                 county={formData.county}
-                handleTextChange={handleTextChange}
+                handleTextChange={handleTextChange} 
+                handleAddressItemChange={handleAddressItemChange}
             />
         </form>
     )

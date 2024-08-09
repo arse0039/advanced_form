@@ -1,7 +1,8 @@
 "use client"
-import React, {useState, useCallback} from 'react';
+import React, {useState} from 'react';
 import TextInput from "./TextInput";
 import data from '../../public/StateData/stateData.json';
+import ComboBox from './ComboBox';
 
 interface AddressSectionProps {
     address: string;
@@ -9,6 +10,7 @@ interface AddressSectionProps {
     county: string;
     zipCode: number | null;
     handleTextChange: React.Dispatch<React.ChangeEvent<HTMLInputElement>>
+    handleAddressItemChange: (item: string, changedValue: string) => void;
 }
 
 const AddressSection = ({
@@ -16,43 +18,40 @@ const AddressSection = ({
     state,
     county,
     zipCode,
-    handleTextChange
+    handleTextChange,
+    handleAddressItemChange
 }: AddressSectionProps) => {
-    const [isFocused, setIsFocused] = useState<boolean>(false);
-    const [selectedState, setSelectedState] = useState<string>("");
+    const [stateSelected, setStateSelected] = useState<boolean>(false);
 
     const statesArray =  Array.from(new Set(data.map((item) => item.State)));
-    const filterCounties = data.filter((i) => i.State === state);
-
-    const handleComboBoxFocus = () => {
-        setIsFocused(true);
-    }
-
-    const handleComboBoxBlur = () => {
-        // setIsFocused(false);
-    }
-
-    const handleSelectedState = (state:string) => {
-        setSelectedState(state);
-        setIsFocused(false)
-    }
-
+    const filterCounties = data.filter((i) => i.State === state).map((item) => item.County)
+    
     return(
         <div className="flex flex-col justify-center gap-12 border-2 border-slate-100 rounded-lg p-4 w-[90vw]">
             <TextInput 
-                labelName={"address"} 
+                labelName={"Address"} 
                 name={"address"} 
                 onChange={handleTextChange}
                 value={address}
                 required={true}
             />
-            <input onFocus={handleComboBoxFocus} onBlur={handleComboBoxBlur} name="state" value={selectedState} onChange={handleTextChange}></input>
-            <ul>
-                {isFocused ? statesArray.map((state, idx) => (
-                    <li key={idx} onClick={() => handleSelectedState(state)}>{state}</li>
-                )) : null }
-            </ul>
-            
+            <div className="flex flex-row gap-8">
+                <ComboBox
+                    labelName="State"
+                    comboBoxData={"state"}  
+                    dataArray={statesArray}
+                    handleAddressItemChange={handleAddressItemChange}
+                    conditionalSelection={setStateSelected}
+                />
+                {stateSelected ? (
+                    <ComboBox 
+                        labelName="County"
+                        comboBoxData={"county"}  
+                        dataArray={filterCounties}
+                        handleAddressItemChange={handleAddressItemChange}
+                    /> )
+                : null}    
+            </div>
         </div>
     )
 }
